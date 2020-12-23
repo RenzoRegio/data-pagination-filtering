@@ -5,10 +5,16 @@ FSJS Project 2 - Data Pagination and Filtering
 const header = document.querySelector("header");
 const ul = document.querySelector(".student-list");
 
-/*
-Create the `showPage` function
-This function will create and insert/append the elements needed to display a "page" of nine students
-*/
+/**
+ * Creates and returns an element while configuring the created element's attributes depending on the arguments provided by the user.
+ * @param {string} elementName - Name of the element that the .createElement method will create.
+ * @param {string} property - Attribute of the element to configure.
+ * @param {string} value - Value set for the property parameter.
+ * @param {string} secondProperty - If parameter is set: secondProperty is the second attribute to configure.
+ * @param {string} secondValue - If parameter is set: secondValue is the value set for the secondProperty parameter.
+ * @param {string} thirdProperty - If parameter is set: thirdProperty is the third attribute to configure.
+ * @param {string} thirdValue - If parameter is set: thirdValue is the value set for the thirdProperty parameter.
+ */
 
 function createElement(
   elementName,
@@ -26,25 +32,33 @@ function createElement(
   return element;
 }
 
+/**
+ * Appends the child element to a parent element.
+ * @param {string} parent - Parent element of the child element.
+ * @param {string} child - Child element to be appended to the parent element.
+ */
+
 function appendToParent(parent, child) {
   const element = parent.appendChild(child);
   return element;
 }
 
-/*
-Create the `showPage` function
-This function will create and insert/append the elements needed to display a "page" of nine students
-*/
+/**
+ * Creates the profile card of each student and displays it on the page depending on the list and page parameters.
+ * @param {array} list - Array containing the data of each student.
+ * @param {number} page - Number value that specifies which index from the array parameter will be shown on the page.
+ */
 
 function displayPage(list, page) {
-  const startIndex = page * 8 - 8;
-  const endIndex = page * 8;
+  const startIndex = page * 8 - 8; //Starting or first index that will be shown on the page. For example: Page 1 contains profile cards with index 0 - 8.
+  const endIndex = page * 8; //Ending or last index that will be shown on the page.
   ul.innerHTML = "";
   for (let i = 0; i < list.length; i++) {
     const currentIndex = list.indexOf(list[i]);
     if (currentIndex >= startIndex && currentIndex <= endIndex) {
       const li = createElement("li", "className", "student-item cf");
-      //first div
+
+      // First div element
       const studentDetails = createElement(
         "div",
         "className",
@@ -75,7 +89,7 @@ function displayPage(list, page) {
       appendToParent(studentDetails, name);
       appendToParent(studentDetails, email);
 
-      // second div
+      // Second div element
       const joinedDetails = createElement("div", "className", "joined-details");
       const date = createElement(
         "span",
@@ -86,7 +100,7 @@ function displayPage(list, page) {
       );
       appendToParent(joinedDetails, date);
 
-      //appending the whole page
+      // Appending to parent elements
       appendToParent(li, studentDetails);
       appendToParent(li, joinedDetails);
       appendToParent(ul, li);
@@ -94,10 +108,10 @@ function displayPage(list, page) {
   }
 }
 
-/*
-Create the `addPagination` function
-This function will create and insert/append the elements needed for the pagination buttons
-*/
+/**
+ * Creates and appends functioning pagination buttons. Once a button is pressed, displayPage() is called and displays the profile cards designated for that certain page.
+ * @param {array} list - Array containing the data of each student.
+ */
 
 function pagination(list) {
   pageButtons = Math.ceil(list.length / 9);
@@ -127,10 +141,9 @@ function pagination(list) {
   });
 }
 
-/*
-Create the `addPagination` function
-This function will create and insert/append the elements needed for the pagination buttons
-*/
+/**
+ * Creates a search bar including events for submitting and keyup - Which calls performSearch() to filter through the array and the searchInput's value.
+ */
 
 function searchBar() {
   const searchLabel = createElement(
@@ -171,24 +184,41 @@ function searchBar() {
   });
 }
 
-/*
-Create the `addPagination` function
-This function will create and insert/append the elements needed for the pagination buttons
-*/
+/**
+ * Filters through the array and value parameters which returns and displays the filtered results to the page.
+ * @param {string} searchInput - Input element that retrieves the value of what the user types.
+ * @param {array} list - Array containing the data of each student.
+ */
 
 function performSearch(searchInput, list) {
+  const pageNumbers = document.querySelector(".pagination");
+  function displayFilteredPage(arr, page) {
+    displayPage(arr, page);
+    pagination(arr);
+    pageNumbers.firstElementChild.className = "link-list";
+  }
   let namesArray = [];
   for (let i = 0; i < list.length; i++) {
     const names = list[i];
-    const name = list[i].name.first.toLowerCase();
+    const name = `${list[i].name.first.toLowerCase()} ${list[
+      i
+    ].name.last.toLowerCase()}`;
     const searchValue = searchInput.value.toLowerCase();
     if (searchValue.length !== 0 && name.includes(searchValue)) {
+      //Filtering through the array to check if the input's value is inside or part of the name variable.
       namesArray.push(names);
-      const page = Math.round(namesArray.length / 9);
-      displayPage(namesArray, page);
-      pagination(namesArray);
-    } else if (searchInput.value === "") {
-      displayPage(list, 1);
+      if (namesArray.length > 9) {
+        const page = Math.round(namesArray.length / 9);
+        displayFilteredPage(namesArray, page);
+      } else {
+        displayFilteredPage(namesArray, 1);
+      }
+    } else if (searchValue == "") {
+      displayFilteredPage(list, 1);
+    } else if (!isNaN(searchValue) || namesArray.length === 0) {
+      ul.innerHTML =
+        "<div id='js-results'><h2 id='js-h2'> No results. </h2></div>";
+      pageNumbers.firstElementChild.className = "hide link-list";
     }
   }
 }
