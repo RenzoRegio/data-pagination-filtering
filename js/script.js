@@ -50,8 +50,22 @@ function appendToParent(parent, child) {
  */
 
 function displayPage(list, page) {
-  const startIndex = page * 8 - 8; //Starting or first index that will be shown on the page. For example: Page 1 contains profile cards with index 0 - 8.
-  const endIndex = page * 8; //Ending or last index that will be shown on the page.
+  let startIndex = 0; //Starting index to be displayed on page 1.
+  let endIndex = 8; //Ending index to be displayed on page 1.
+  if (page == 2) {
+    //startIndex is changed depending on the value of the page parameter since having one calculation for startIndex repeats profile cards.
+    startIndex = page * 8 - 7;
+  } else if (page == 3) {
+    startIndex = page * 8 - 6;
+  } else if (page == 4) {
+    startIndex = page * 8 - 5;
+  } else if (page == 5) {
+    startIndex = page * 8 - 4;
+  }
+  if (page > 1) {
+    //endIndex for each page parameter that is greater than 1.
+    endIndex = page * 9 - 1;
+  }
   ul.innerHTML = "";
   for (let i = 0; i < list.length; i++) {
     const currentIndex = list.indexOf(list[i]);
