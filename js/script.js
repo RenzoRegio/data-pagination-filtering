@@ -221,12 +221,7 @@ function performSearch(searchInput, list) {
     if (searchValue.length !== 0 && name.includes(searchValue)) {
       //Filtering through the array to check if the input's value is inside or part of the name variable.
       namesArray.push(names);
-      if (namesArray.length > 9) {
-        const page = Math.round(namesArray.length / 9);
-        displayFilteredPage(namesArray, page);
-      } else {
-        displayFilteredPage(namesArray, 1);
-      }
+      displayFilteredPage(namesArray, 1);
     } else if (searchValue == "") {
       displayFilteredPage(list, 1);
     } else if (!isNaN(searchValue) || namesArray.length === 0) {
