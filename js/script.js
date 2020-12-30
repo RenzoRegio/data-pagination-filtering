@@ -50,18 +50,8 @@ function appendToParent(parent, child) {
  */
 
 function displayPage(list, page) {
-  let startIndex = 0; //Starting index to be displayed on page 1.
+  let startIndex = page * 9 - 9; //Starting index to be displayed on each page.
   let endIndex = 8; //Ending index to be displayed on page 1.
-  if (page == 2) {
-    //startIndex is changed depending on the value of the page parameter since having one calculation for startIndex repeats profile cards.
-    startIndex = page * 8 - 7;
-  } else if (page == 3) {
-    startIndex = page * 8 - 6;
-  } else if (page == 4) {
-    startIndex = page * 8 - 5;
-  } else if (page == 5) {
-    startIndex = page * 8 - 4;
-  }
   if (page > 1) {
     //endIndex for each page parameter that is greater than 1.
     endIndex = page * 9 - 1;
